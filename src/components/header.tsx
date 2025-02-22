@@ -17,8 +17,6 @@ const Header = () => {
         </Link>
 
         <div>
-          {/* search */}
-          {/* theme toggle */}
           <div
             onClick={() => setTheme(isDark ? "light" : "dark")}
             className={`flex items-center cursor-pointer transition-transform duration-500
