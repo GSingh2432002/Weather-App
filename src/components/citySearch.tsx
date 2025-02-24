@@ -9,11 +9,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "./ui/command";
-import { Clock, Loader2, Search, XCircle } from "lucide-react";
+import { Clock, Loader2, Search, Star, XCircle } from "lucide-react";
 import { useLocationSearch } from "@/hooks/useWeather";
 import { useNavigate } from "react-router-dom";
 import { useSearchHistory } from "@/hooks/useSearchHistory";
 import { format } from "date-fns";
+import { useFavourite } from "@/hooks/useFavourite";
 
 const CitySearch = () => {
   const [open, setOpen] = useState(false);
@@ -38,6 +39,8 @@ const CitySearch = () => {
     navigate(`/city/${name}?lat=${lat}&lon=${lon}`);
   };
 
+  const { favourites } = useFavourite();
+
   return (
     <>
       <Button
@@ -58,16 +61,38 @@ const CitySearch = () => {
           {query.length > 2 && !isLoading && (
             <CommandEmpty>No cities found.</CommandEmpty>
           )}
-          {/* <CommandGroup heading="Favorites">
-            <CommandItem>Calendar</CommandItem>
-          </CommandGroup> */}
+          {/* Favourites Section */}
+          {favourites.length > 0 && (
+            <CommandGroup heading="Favourites">
+              {favourites.map((city) => (
+                <CommandItem
+                  key={city.id}
+                  value={`${city.lat}|${city.lon}|${city.name}|${city.country}`}
+                  onSelect={handleSelect}
+                >
+                  <Star className="mr-2 h-4 w-4 text-yellow-500" />
+                  <span>{city.name}</span>
+                  {city.state && (
+                    <span className="text-sm text-muted-foreground">
+                      , {city.state}
+                    </span>
+                  )}
+                  <span className="text-sm text-muted-foreground">
+                    , {city.country}
+                  </span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
 
           {history.length > 0 && (
             <>
               <CommandSeparator />
               <CommandGroup>
                 <div className="flex items-center justify-between px-2 my-2">
-                  <p className="text-xs text-muted-foreground">Recent Searches</p>
+                  <p className="text-xs text-muted-foreground">
+                    Recent Searches
+                  </p>
                   <Button
                     variant="ghost"
                     size="sm"

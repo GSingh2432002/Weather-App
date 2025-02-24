@@ -3,7 +3,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { useWeatherQuery } from "@/hooks/useWeather";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface FavouriteCityTabletProps {
@@ -67,6 +67,36 @@ function FavouriteCityTablet({
       >
         <X className="h-4 w-4" />
       </Button>
+
+      {isLoading ? (
+        <div className="flex h-8 items-center justify-center">
+          <Loader className="h-4 w-4 animate-spin" />
+        </div>
+      ) : weather ? (
+        <>
+          <div className="flex items-center gap-2">
+            <img
+              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+              alt={weather.weather[0].description}
+              className="h-8 w-8"
+            />
+            <div>
+              <p className="font-medium">{name}</p>
+              <p className="text-xs text-muted-foreground">
+                {weather.sys.country}
+              </p>
+            </div>
+          </div>
+          <div className="ml-auto text-right">
+            <p className="text-xl font-bold">
+              {Math.round(weather.main.temp)}°
+            </p>
+            <p className="text-xs capitalize text-muted-foreground">
+              {weather.weather[0].description}
+            </p>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
